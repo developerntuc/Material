@@ -26,12 +26,12 @@
 import UIKit
 
 @objc(SwitchState)
-public enum SwitchState: Int {
+public enum MTSwitchState: Int {
   case on
   case off
 }
 
-public enum SwitchSize {
+public enum MTSwitchSize {
   case small
   case medium
   case large
@@ -39,23 +39,23 @@ public enum SwitchSize {
 }
 
 @objc(SwitchDelegate)
-public protocol SwitchDelegate {
+public protocol MTSwitchDelegate {
   /**
    A Switch delegate method for state changes.
    - Parameter control: Switch control.
    - Parameter state: SwitchState value.
    */
-  func switchDidChangeState(control: Switch, state: SwitchState)
+  func switchDidChangeState(control: MTSwitch, state: MTSwitchState)
 }
 
-open class Switch: UIControl, Themeable {
+open class MTSwitch: UIControl, Themeable {
   /// Will layout the view.
   open var willLayout: Bool {
     return 0 < bounds.width && 0 < bounds.height && nil != superview
   }
   
   /// An internal reference to the switchState public property.
-  fileprivate var internalSwitchState = SwitchState.off
+  fileprivate var internalSwitchState = MTSwitchState.off
   
   /// Track thickness.
   open var trackThickness: CGFloat = 0 {
@@ -81,7 +81,7 @@ open class Switch: UIControl, Themeable {
   fileprivate var bounceOffset: CGFloat = 3
   
   /// An Optional delegation method.
-  open weak var delegate: SwitchDelegate?
+  open weak var delegate: MTSwitchDelegate?
   
   /// Indicates if the animation should bounce.
   @IBInspectable
@@ -221,7 +221,7 @@ open class Switch: UIControl, Themeable {
   }
   
   /// Switch state.
-  open var switchState: SwitchState {
+  open var switchState: MTSwitchState {
     get {
       return internalSwitchState
     }
@@ -231,7 +231,7 @@ open class Switch: UIControl, Themeable {
   }
   
   /// Switch size.
-  open var switchSize = SwitchSize.medium {
+  open var switchSize = MTSwitchSize.medium {
     didSet {
       switch switchSize {
       case .small:
@@ -295,7 +295,7 @@ open class Switch: UIControl, Themeable {
    - Parameter style: A SwitchStyle value.
    - Parameter size: A SwitchSize value.
    */
-  public init(state: SwitchState = .off, size: SwitchSize = .medium) {
+  public init(state: MTSwitchState = .off, size: MTSwitchSize = .medium) {
     track = UIView()
     button = FABButton()
     super.init(frame: .zero)
@@ -339,7 +339,7 @@ open class Switch: UIControl, Themeable {
    Toggle the Switch state, if On will be Off, and if Off will be On.
    - Parameter completion: An Optional completion block.
    */
-  open func toggle(completion: ((Switch) -> Void)? = nil) {
+  open func toggle(completion: ((MTSwitch) -> Void)? = nil) {
     updateSwitchState(state: .on == internalSwitchState ? .off : .on, animated: true, isTriggeredByUserInteraction: false, completion: completion)
   }
   
@@ -384,19 +384,19 @@ open class Switch: UIControl, Themeable {
   }
 }
 
-extension Switch {
+extension MTSwitch {
   /**
    Set the switchState property with an option to animate.
    - Parameter state: The SwitchState to set.
    - Parameter animated: A Boolean indicating to set the animation or not.
    - Parameter completion: An Optional completion block.
    */
-  open func setSwitchState(state: SwitchState, animated: Bool = true, completion: ((Switch) -> Void)? = nil) {
+  open func setSwitchState(state: MTSwitchState, animated: Bool = true, completion: ((MTSwitch) -> Void)? = nil) {
     updateSwitchState(state: state, animated: animated, isTriggeredByUserInteraction: false, completion: completion)
   }
 }
 
-fileprivate extension Switch {
+fileprivate extension MTSwitch {
   /**
    Set the switchState property with an option to animate.
    - Parameter state: The SwitchState to set.
@@ -405,7 +405,7 @@ fileprivate extension Switch {
    state was changed by a user interaction, true if yes, false otherwise.
    - Parameter completion: An Optional completion block.
    */
-  func updateSwitchState(state: SwitchState, animated: Bool, isTriggeredByUserInteraction: Bool, completion: ((Switch) -> Void)? = nil) {
+  func updateSwitchState(state: MTSwitchState, animated: Bool, isTriggeredByUserInteraction: Bool, completion: ((MTSwitch) -> Void)? = nil) {
     guard isEnabled && internalSwitchState != state else {
       return
     }
@@ -446,7 +446,7 @@ fileprivate extension Switch {
    Updates the coloring for the enabled state.
    - Parameter state: SwitchState.
    */
-  func updateColorForState(state: SwitchState) {
+  func updateColorForState(state: MTSwitchState) {
     if .on == state {
       button.backgroundColor = buttonOnColor
       track.backgroundColor = trackOnColor
@@ -462,7 +462,7 @@ fileprivate extension Switch {
    Updates the coloring for the disabled state.
    - Parameter state: SwitchState.
    */
-  func updateColorForDisabledState(state: SwitchState) {
+  func updateColorForDisabledState(state: MTSwitchState) {
     if .on == state {
       button.backgroundColor = buttonOnDisabledColor
       track.backgroundColor = trackOnDisabledColor
@@ -478,7 +478,7 @@ fileprivate extension Switch {
    Updates the style based on the state.
    - Parameter state: The SwitchState to set the style to.
    */
-  func styleForState(state: SwitchState) {
+  func styleForState(state: MTSwitchState) {
     if isEnabled {
       updateColorForState(state: state)
       
@@ -488,13 +488,13 @@ fileprivate extension Switch {
   }
 }
 
-fileprivate extension Switch {
+fileprivate extension MTSwitch {
   /**
    Set the switchState property with an animate.
    - Parameter state: The SwitchState to set.
    - Parameter completion: An Optional completion block.
    */
-  func animateToState(state: SwitchState, completion: ((Switch) -> Void)? = nil) {
+  func animateToState(state: MTSwitchState, completion: ((MTSwitch) -> Void)? = nil) {
     isUserInteractionEnabled = false
     UIView.animate(withDuration: 0.15,
                    delay: 0.05,
@@ -526,7 +526,7 @@ fileprivate extension Switch {
   }
 }
 
-fileprivate extension Switch {
+fileprivate extension MTSwitch {
   /**
    Handle the TouchUpOutside and TouchCancel moments.
    - Parameter sender: A UIButton.
@@ -569,7 +569,7 @@ fileprivate extension Switch {
   }
 }
 
-fileprivate extension Switch {
+fileprivate extension MTSwitch {
   /// Prepares the track.
   func prepareTrack() {
     addSubview(track)
@@ -589,7 +589,7 @@ fileprivate extension Switch {
    init to set the state value and have an effect.
    - Parameter state: The SwitchState to set.
    */
-  func prepareSwitchState(state: SwitchState = .off) {
+  func prepareSwitchState(state: MTSwitchState = .off) {
     updateSwitchState(state: state, animated: false, isTriggeredByUserInteraction: false)
   }
   
@@ -598,7 +598,7 @@ fileprivate extension Switch {
    init to set the size value and have an effect.
    - Parameter size: The SwitchSize to set.
    */
-  func prepareSwitchSize(size: SwitchSize = .medium) {
+  func prepareSwitchSize(size: MTSwitchSize = .medium) {
     switchSize = size
   }
 }
